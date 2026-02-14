@@ -1,1 +1,1 @@
-{  "functions": {    "api/*.php": {      "runtime": "@vercel/php@0.5.3",      "memory": 1024,      "maxDuration": 10    }  },  "rewrites": [    {      "source": "/(.*)",      "destination": "/api/index.php"    }  ]}
+{  "functions": {    "api/*.php": {      "runtime": "vercel/php@0.5.3",      "memory": 1024,      "maxDuration": 10    }  },  "rewrites": [    {      "source": "/(.*)",      "destination": "/api/index.php"    }  ]}
